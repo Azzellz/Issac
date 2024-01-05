@@ -16,7 +16,7 @@ const defaultIssacConfig: IssacConfig = {
 export class Issac {
     public server: Server
     private config: IssacConfig
-    private fetcher: Fetcher    //核心处理
+    private fetcher: Fetcher    //核心处理器
     constructor(config: IssacConfig = defaultIssacConfig) {
         this.config = config
         this.server = {} as Server

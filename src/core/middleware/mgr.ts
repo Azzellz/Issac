@@ -1,10 +1,10 @@
 import { IssacMiddleware } from "."
-import { Responser } from "../responser"
+import { IssacResponser } from "../responser"
 import { IssacRequest, IssacWrapRequest } from "../wrap-request"
 
 type IssacMiddlewareNext = () => void
 
-export type IssacMiddlewareHandler = (request: IssacRequest, responser: Responser, next: IssacMiddlewareNext) => void
+export type IssacMiddlewareHandler = (request: IssacRequest, responser: IssacResponser, next: IssacMiddlewareNext) => void
 
 export interface IssacMiddlewareMgrConfig {
 
@@ -26,7 +26,7 @@ export class IssacMiddlewareMgr {
         })
     }
     //TODO: Promise的返回值可能有更多玩法QWQ
-    public do(request: IssacRequest, responser: Responser): Promise<void> {
+    public do(request: IssacRequest, responser: IssacResponser): Promise<void> {
         return new Promise((resolve, reject) => {
             //中间件索引
             let index = 0;

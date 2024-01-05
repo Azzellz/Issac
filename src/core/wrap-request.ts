@@ -3,7 +3,10 @@ export interface IssacRequest extends Request {
     payload: any    //自定义负载
 }
 
-//包装请求
+/**
+* 包装请求
+* @private
+*/
 export class IssacWrapRequest {
     public origin: Request
     public request: IssacRequest

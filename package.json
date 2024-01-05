@@ -1,11 +1,17 @@
 {
-  "name": "issac",
-  "module": "src/index.ts",
-  "type": "module",
-  "devDependencies": {
-    "bun-types": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  }
+    "name": "issac",
+    "module": "src/index.ts",
+    "type": "module",
+    "devDependencies": {
+        "bun-types": "latest",
+        "vitepress": "^1.0.0-rc.34"
+    },
+    "peerDependencies": {
+        "typescript": "^5.0.0"
+    },
+    "scripts": {
+        "docs:dev": "vitepress --host --port 1145 dev docs",
+        "docs:build": "vitepress build docs",
+        "docs:preview": "vitepress preview docs"
+    }
 }

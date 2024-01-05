@@ -2,7 +2,7 @@ import { FetchHandler } from "../fetch";
 import { IssacMiddleware } from "../middleware";
 import { IssacMiddlewareMgrConfig, defaultIssacMiddlewareMgrConfig, IssacMiddlewareMgr } from "../middleware/mgr";
 
-import { Responser } from "../responser";
+import { IssacResponser } from "../responser";
 import { IssacWrapRequest } from "../wrap-request";
 import { RouterModule } from "./module";
 
@@ -159,7 +159,7 @@ export class IssacRouter {
     }
 
     //匹配各模块执行
-    public async match({ request }: IssacWrapRequest, responser: Responser) {
+    public async match({ request }: IssacWrapRequest, responser: IssacResponser) {
         //执行中间件s
         await this.middlewareMgr.do(request, responser)
         //匹配

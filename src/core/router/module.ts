@@ -1,5 +1,5 @@
 import { FetchHandler } from "../fetch"
-import { Responser } from "../responser"
+import { IssacResponser } from "../responser"
 import { IssacRequest } from "../wrap-request"
 
 //路由子模块
@@ -35,7 +35,7 @@ export class RouterModule {
     }
 
     //执行
-    public do(request: IssacRequest, responser: Responser) {
+    public do(request: IssacRequest, responser: IssacResponser) {
         const handlers = this.handlerMap.get(new URL(request.url).pathname)
         if (handlers) {
             //遍历handler集合然后把request和responser传进去
