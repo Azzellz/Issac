@@ -3,14 +3,17 @@ import { FetchHandler, Fetcher } from "./fetch"
 import { IssacRouterConfig, IssacRouter, defaultIssacRouterConfig } from "./router"
 import { IssacMiddleware } from "./middleware"
 import { IssacMiddlewareHandler } from "./middleware/mgr"
+import { IssacEventHandler, defaultIssacErrorHandler } from "./event"
 
 
 export interface IssacConfig {
-    router: IssacRouterConfig
+    router?: IssacRouterConfig
+    errorHandler?: IssacEventHandler
 }
 
 const defaultIssacConfig: IssacConfig = {
-    router: defaultIssacRouterConfig
+    router: defaultIssacRouterConfig,
+    errorHandler: defaultIssacErrorHandler
 }
 
 export class Issac {
@@ -20,7 +23,7 @@ export class Issac {
     constructor(config: IssacConfig = defaultIssacConfig) {
         this.config = config
         this.server = {} as Server
-        this.fetcher = new Fetcher(new IssacRouter('', config.router))
+        this.fetcher = new Fetcher(new IssacRouter('', config.router), config.errorHandler)
     }
 
     //get注册接口

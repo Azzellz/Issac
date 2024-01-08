@@ -1,3 +1,4 @@
+import { IssacEventer } from "../event"
 import { FetchHandler } from "../fetch"
 import { IssacResponser } from "../responser"
 import { IssacRequest } from "../wrap-request"
@@ -35,14 +36,25 @@ export class RouterModule {
     }
 
     //执行
-    public do(request: IssacRequest, responser: IssacResponser) {
+    public do(request: IssacRequest, responser: IssacResponser): void {
         const handlers = this.handlerMap.get(new URL(request.url).pathname)
         if (handlers) {
-            //遍历handler集合然后把request和responser传进去
-            handlers.forEach((handler) => handler(request, responser))
+            handlers.forEach(async (handler) => {
+                try {
+                    await handler(request, responser)
+                } catch (error) {
+                    IssacEventer.emit(IssacEventer.eventSymbol.error, error)
+                }
+            })
         } else {
-            //没找到就触发lost函数
-            this.lost(request, responser)
+            try {
+                //没找到就触发lost函数
+                this.lost(request, responser)
+            } catch (error) {
+                IssacEventer.emit(IssacEventer.eventSymbol.error, error)
+            }
+
         }
+
     }
 }

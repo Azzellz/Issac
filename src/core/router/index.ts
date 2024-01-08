@@ -160,7 +160,7 @@ export class IssacRouter {
 
     //匹配各模块执行
     public async match({ request }: IssacWrapRequest, responser: IssacResponser) {
-        //执行中间件s
+        //等待中间件执行完毕
         await this.middlewareMgr.do(request, responser)
         //匹配
         switch (request.method) {
@@ -171,10 +171,22 @@ export class IssacRouter {
                 this.postModule.do(request, responser)
                 break
             case 'PUT':
-                this.postModule.do(request, responser)
+                this.putModule.do(request, responser)
                 break
             case 'DELETE':
-                this.postModule.do(request, responser)
+                this.deleteModule.do(request, responser)
+                break
+            case 'CONNECT':
+                this.connectModule.do(request, responser)
+                break;
+            case 'OPTIONS':
+                this.optionsModule.do(request, responser)
+                break
+            case 'TRACE':
+                this.traceModule.do(request, responser)
+                break
+            case 'PATCH':
+                this.patchModule.do(request, responser)
                 break
             default:
                 break;
