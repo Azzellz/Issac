@@ -1,3 +1,7 @@
+/**
+* 拓展请求
+* @public
+*/
 export interface IssacRequest extends Request {
     query: Record<string, string | number>  //封装好的query
     payload: any    //自定义负载

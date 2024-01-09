@@ -2,6 +2,10 @@ interface IssacResponserOptions {
     errorHandler?: (error: Error) => void
 }
 
+/**
+* 请求响应者
+* @private
+*/
 export class IssacResponser {
     /**
     * Promise-Task异步模型
@@ -16,7 +20,6 @@ export class IssacResponser {
         this.options = options
         this.init = {}
         this.task = new Promise((resolve, reject) => {
-            //TODO: 能否采用更优雅的实现????
             //捕获Promise处理器
             this.resolve = resolve
             this.reject = reject

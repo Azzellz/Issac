@@ -3,7 +3,7 @@ import { FetchHandler, Fetcher } from "./fetch"
 import { IssacRouterConfig, IssacRouter, defaultIssacRouterConfig } from "./router"
 import { IssacMiddleware } from "./middleware"
 import { IssacMiddlewareHandler } from "./middleware/mgr"
-import { IssacEventHandler, defaultIssacErrorHandler } from "./event"
+import { IssacEventHandler, defaultIssacErrorEventHandler } from "./event"
 
 
 export interface IssacConfig {
@@ -13,7 +13,7 @@ export interface IssacConfig {
 
 const defaultIssacConfig: IssacConfig = {
     router: defaultIssacRouterConfig,
-    errorHandler: defaultIssacErrorHandler
+    errorHandler: defaultIssacErrorEventHandler
 }
 
 export class Issac {

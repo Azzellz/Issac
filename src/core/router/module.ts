@@ -37,13 +37,16 @@ export class RouterModule {
 
     //执行
     public do(request: IssacRequest, responser: IssacResponser): void {
-        const handlers = this.handlerMap.get(new URL(request.url).pathname)
+        const routePath = new URL(request.url).pathname
+        const handlers = this.handlerMap.get(routePath)
         if (handlers) {
             handlers.forEach(async (handler) => {
                 try {
+                    //为了捕获异步handler,要包装成async
                     await handler(request, responser)
                 } catch (error) {
-                    IssacEventer.emit(IssacEventer.eventSymbol.error, error)
+                    //触发错误事件处理
+                    IssacEventer.emit(IssacEventer.eventSymbol.error, new Error(error as any), request)
                 }
             })
         } else {
@@ -51,7 +54,7 @@ export class RouterModule {
                 //没找到就触发lost函数
                 this.lost(request, responser)
             } catch (error) {
-                IssacEventer.emit(IssacEventer.eventSymbol.error, error)
+                IssacEventer.emit(IssacEventer.eventSymbol.error, error, request)
             }
 
         }
