@@ -40,7 +40,7 @@ export class IssacMiddlewareMgr {
                     //执行中间件的处理函数
                     await middleware.handler(request, responser, next)
                 } catch (error) {
-                    IssacEventer.emit(IssacEventer.eventSymbol.error, error)
+                    IssacEventer.emit(IssacEventer.eventSymbol.error, new Error(error as any), request)
                 }
             }
             //执行中间件链

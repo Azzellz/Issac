@@ -73,6 +73,7 @@ export class Issac {
             port,
             fetch: this.fetcher.handler(),
             websocket: {
+                //TODO Websocket模块
                 message(ws, message) {
                 },
             }

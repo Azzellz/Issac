@@ -1,11 +1,9 @@
 # Issac
 
-一个基于 Bun 的轻量级 web 后端框架
+一个基于 Bunjs 的轻量级 web 后端框架,使用纯 ts + Bun Native API 实现
 
-一个基于 Bun 的 web 框架
+支持:路由 中间件 日志 错误处理等常用功能
 
-# TODOS
+# TODO
 
-1.完成事件流
-2.完成日志模块
-3.完成websockets模块
+1.完成对 Websocket 的支持
