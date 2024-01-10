@@ -11,7 +11,7 @@ export type IssacErrorEventHandler = (error: Error, request: IssacRequest) => vo
 export const defaultIssacErrorEventHandler: IssacErrorEventHandler = (error, request) => {
     //1.调用日志器打印
     IssacLogger.error(error, request)
-    //TODO 2.具体的错误处理逻辑,比如说生成日志文件并且写入日志信息
+    //TODO 2.具体的错误处理逻辑
 }
 
 /**

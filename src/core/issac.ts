@@ -4,26 +4,34 @@ import { IssacRouterConfig, IssacRouter, defaultIssacRouterConfig } from "./rout
 import { IssacMiddleware } from "./middleware"
 import { IssacMiddlewareHandler } from "./middleware/mgr"
 import { IssacEventHandler, defaultIssacErrorEventHandler } from "./event"
+import { IssacLogger, IssacLoggerConfig, defaultIssacLoggerConfig } from "./log"
 
 
 export interface IssacConfig {
     router?: IssacRouterConfig
     errorHandler?: IssacEventHandler
+    log?: IssacLoggerConfig
 }
 
 const defaultIssacConfig: IssacConfig = {
     router: defaultIssacRouterConfig,
-    errorHandler: defaultIssacErrorEventHandler
+    errorHandler: defaultIssacErrorEventHandler,
+    log: defaultIssacLoggerConfig
 }
 
 export class Issac {
-    public server: Server
+    public server: Server = {} as Server  //骗过编译器
     private config: IssacConfig
     private fetcher: Fetcher    //核心处理器
     constructor(config: IssacConfig = defaultIssacConfig) {
-        this.config = config
-        this.server = {} as Server
-        this.fetcher = new Fetcher(new IssacRouter('', config.router), config.errorHandler)
+        //初始化各配置
+        this.config = {
+            router: config.router ? config.router : defaultIssacRouterConfig,
+            errorHandler: config.errorHandler ? config.errorHandler : defaultIssacErrorEventHandler,
+            log: config.log ? config.log : defaultIssacLoggerConfig
+        }
+        IssacLogger.config = this.config.log!
+        this.fetcher = new Fetcher(new IssacRouter('', this.config.router), this.config.errorHandler)
     }
 
     //get注册接口

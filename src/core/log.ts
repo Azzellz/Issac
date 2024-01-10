@@ -30,14 +30,50 @@ namespace Time {
     }
 }
 
+export interface IssacLoggerConfig {
+    off?: boolean //是否关闭日志
+    output: 'terminal' | 'file' //输出方式
+    file?: {    //以文件模式输出时配置的
+        path: string
+        maxRecord?: number
+    }
+    terminal?: {
+
+    }
+}
+
+export const defaultIssacLoggerConfig: IssacLoggerConfig = {
+    output: 'terminal'
+}
+
 //TODO 全局静态日志打印器类,需要实现写入文件
 export class IssacLogger {
+    public static config: IssacLoggerConfig = defaultIssacLoggerConfig
     public static warn() {
 
     }
-    public static error(error: Error, request: IssacRequest, file: boolean = false) {
+    public static normal(request: IssacRequest) {
+        if (this.config.off) return
         const routeMethod = request.method
         const routePath = new URL(request.url).pathname
-        console.error(Color.getColoredText(`[Issac-Error/${Time.getFormattedTime()}]:${routeMethod} ${routePath} ${error}`, 'RED'))
+    }
+    public static error(error: Error, request: IssacRequest) {
+
+        if (this.config.off) return
+        console.log(123)
+        const routeMethod = request.method
+        const routePath = new URL(request.url).pathname
+
+        const log = `[Issac-Error/${Time.getFormattedTime()}]:${routeMethod} ${routePath} ${error}`
+        switch (this.config.output) {
+            case "terminal":
+                console.error(Color.getColoredText(log, 'RED'))
+                break
+            case "file":
+                if (this.config.file) {
+                    Bun.write(this.config.file.path, log)
+                }
+                break
+        }
     }
 }

@@ -37,6 +37,16 @@ export class IssacResponser {
         } else {
             (this.init.headers as Record<string, string>)[key] = value
         }
+        return this
+    }
+
+    /**
+    * 设置响应状态码
+    * @public
+    */
+    public status(code: number) {
+        this.init.status = code
+        return this
     }
 
     /**
@@ -45,6 +55,7 @@ export class IssacResponser {
     */
     public resetHeaders(headers: Bun.HeadersInit) {
         this.init.headers = headers
+        return this
     }
 
     /**
@@ -53,11 +64,12 @@ export class IssacResponser {
     */
     public mergeHeaders(headers: Bun.HeadersInit) {
         this.init.headers = { ...this.init.headers, ...headers }
+        return this
     }
 
     /**
     * 合并init:合并headers->覆盖状态码->覆盖状态描述
-    * @public
+    * @private
     */
     private mergeInit(init: Bun.ResponseInit) {
         if (init) {
@@ -80,7 +92,10 @@ export class IssacResponser {
             //执行用户注册的响应错误处理
             this.options?.errorHandler && this.options?.errorHandler(new Error(error));
             this.reject(`Error in responser.text\ndetail:${error}`)
+        } finally {
+            return this
         }
+
     }
 
     /**
@@ -101,6 +116,8 @@ export class IssacResponser {
             //执行用户注册的响应错误处理
             this.options?.errorHandler && this.options?.errorHandler(new Error(error));
             this.reject(`Error in responser.text\ndetail:${error}`)
+        } finally {
+            return this
         }
     }
 
@@ -117,6 +134,8 @@ export class IssacResponser {
             //执行用户注册的响应错误处理
             this.options?.errorHandler && this.options?.errorHandler(new Error(error));
             this.reject(`Error in responser.text\ndetail:${error}`)
+        } finally {
+            return this
         }
     }
 
@@ -132,6 +151,8 @@ export class IssacResponser {
             //执行用户注册的响应错误处理
             this.options?.errorHandler && this.options?.errorHandler(new Error(error));
             this.reject(`Error in responser.any\ndetail:${error}`)
+        } finally {
+            return this
         }
     }
 
