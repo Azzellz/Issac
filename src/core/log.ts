@@ -1,5 +1,6 @@
 import { IssacResponser } from "./responser"
 import { IssacRequest } from "./wrap-request"
+import { appendFile } from "fs/promises"
 
 namespace Color {
     type IssacColor = 'RESET' | 'RED' | 'GREEN' | 'YELLOW' | 'BLUE'
@@ -30,6 +31,7 @@ namespace Time {
     }
 }
 
+//TODO 请求IP溯源
 export interface IssacLoggerConfig {
     off?: boolean //是否关闭日志
     output: 'terminal' | 'file' //输出方式
@@ -52,15 +54,14 @@ export class IssacLogger {
     public static warn(content: string) {
         if (this.config.off) return
 
-        const log = `[Issac-Warn|${Time.getFormattedTime()}]:${content}`
+        const log = `[Issac-Warn|${Time.getFormattedTime()}]:${content}\n`
         switch (this.config.output) {
             case "terminal":
                 console.error(Color.getColoredText(log, 'YELLOW'))
                 break
             case "file":
                 if (this.config.file) {
-                    //TODO 实现追加写入
-                    Bun.write(this.config.file.path, log)
+                    appendFile(this.config.file.path, log)
                 }
                 break
         }
@@ -70,7 +71,7 @@ export class IssacLogger {
         const routeMethod = request.method
         const routePath = new URL(request.url).pathname
         const status = responser.init.status
-        const log = `[Issac|${Time.getFormattedTime()}]:${routeMethod} ${status} ${routePath}`
+        const log = `[Issac|${Time.getFormattedTime()}]:${routeMethod} ${status} ${routePath}\n`
         switch (this.config.output) {
             case "terminal":
                 if (status === 200) {
@@ -82,7 +83,7 @@ export class IssacLogger {
                 break
             case "file":
                 if (this.config.file) {
-                    Bun.write(this.config.file.path, log)
+                    appendFile(this.config.file.path, log)
                 }
                 break
         }
@@ -91,14 +92,14 @@ export class IssacLogger {
         if (this.config.off) return
         const routeMethod = request.method
         const routePath = new URL(request.url).pathname
-        const log = `[Issac-Error|${Time.getFormattedTime()}]:${routeMethod} ${routePath} ${error}`
+        const log = `[Issac-Error|${Time.getFormattedTime()}]:${routeMethod} ${routePath} ${error}\n`
         switch (this.config.output) {
             case "terminal":
                 console.error(Color.getColoredText(log, 'RED'))
                 break
             case "file":
                 if (this.config.file) {
-                    Bun.write(this.config.file.path, log)
+                    appendFile(this.config.file.path, log)
                 }
                 break
         }

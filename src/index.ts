@@ -14,7 +14,6 @@ const router = new IssacRouter('/issac')
 
 //注册
 router.get('/get', async (req, res) => {
-    // throw 1
     res.status(200).text('good!')
 })
 
@@ -23,3 +22,5 @@ app.use(router)
 
 
 app.listen(1145)
+
+Bun.write('./1.txt','a')
