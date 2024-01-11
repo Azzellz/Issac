@@ -1,5 +1,6 @@
 import { IssacEventer } from "../event"
 import { FetchHandler } from "../fetch"
+import { IssacLogger } from "../log"
 import { IssacResponser } from "../responser"
 import { IssacRequest } from "../wrap-request"
 
@@ -36,19 +37,35 @@ export class RouterModule {
     }
 
     //执行
-    public do(request: IssacRequest, responser: IssacResponser): void {
+    public async do(request: IssacRequest, responser: IssacResponser): Promise<void> {
         const routePath = new URL(request.url).pathname
         const handlers = this.handlerMap.get(routePath)
         if (handlers) {
-            handlers.forEach(async (handler) => {
-                try {
-                    //为了捕获异步handler,要包装成async
-                    await handler(request, responser)
-                } catch (error) {
-                    //触发错误事件处理
-                    IssacEventer.emit(IssacEventer.eventSymbol.error, new Error(error as any), request)
-                }
+            const task = new Promise<boolean>((resolve) => {
+                let count = 0
+                let isError: boolean = false
+                handlers.forEach(async (handler) => {
+                    //发生错误后就不继续执行
+                    if (isError) return
+                    //执行handler
+                    try {
+                        //!为了捕获异步handler,要包装成async
+                        await handler(request, responser)
+                    } catch (error) {
+                        //触发错误事件处理
+                        resolve(false)
+                        IssacEventer.emit(IssacEventer.eventSymbol.error, new Error(error as any), request)
+                    }
+                    //判断是否为最后一个
+                    if (++count === handlers.size) {
+                        resolve(true)
+                    }
+                })
             })
+            //没有错误则输出正常的日志
+            if (await task) {
+                IssacLogger.normal(request, responser)
+            }
         } else {
             try {
                 //没找到就触发lost函数

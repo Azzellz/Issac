@@ -1,6 +1,6 @@
+import { IssacResponser } from "./responser"
 import { IssacRequest } from "./wrap-request"
 
-//TODO 不要暴露多余内部实现的导出,可以考虑使用内部模块封装一下
 namespace Color {
     type IssacColor = 'RESET' | 'RED' | 'GREEN' | 'YELLOW' | 'BLUE'
     const COLOR: Record<IssacColor, string> = {
@@ -49,22 +49,49 @@ export const defaultIssacLoggerConfig: IssacLoggerConfig = {
 //TODO 全局静态日志打印器类,需要实现写入文件
 export class IssacLogger {
     public static config: IssacLoggerConfig = defaultIssacLoggerConfig
-    public static warn() {
+    public static warn(content: string) {
+        if (this.config.off) return
 
+        const log = `[Issac-Warn|${Time.getFormattedTime()}]:${content}`
+        switch (this.config.output) {
+            case "terminal":
+                console.error(Color.getColoredText(log, 'YELLOW'))
+                break
+            case "file":
+                if (this.config.file) {
+                    //TODO 实现追加写入
+                    Bun.write(this.config.file.path, log)
+                }
+                break
+        }
     }
-    public static normal(request: IssacRequest) {
+    public static normal(request: IssacRequest, responser: IssacResponser) {
         if (this.config.off) return
         const routeMethod = request.method
         const routePath = new URL(request.url).pathname
+        const status = responser.init.status
+        const log = `[Issac|${Time.getFormattedTime()}]:${routeMethod} ${status} ${routePath}`
+        switch (this.config.output) {
+            case "terminal":
+                if (status === 200) {
+                    console.log(Color.getColoredText(log, 'GREEN'))
+                } else {
+                    //TODO 其他状态码的多颜色支持
+                    console.log(Color.getColoredText(log, 'BLUE'))
+                }
+                break
+            case "file":
+                if (this.config.file) {
+                    Bun.write(this.config.file.path, log)
+                }
+                break
+        }
     }
     public static error(error: Error, request: IssacRequest) {
-
         if (this.config.off) return
-        console.log(123)
         const routeMethod = request.method
         const routePath = new URL(request.url).pathname
-
-        const log = `[Issac-Error/${Time.getFormattedTime()}]:${routeMethod} ${routePath} ${error}`
+        const log = `[Issac-Error|${Time.getFormattedTime()}]:${routeMethod} ${routePath} ${error}`
         switch (this.config.output) {
             case "terminal":
                 console.error(Color.getColoredText(log, 'RED'))

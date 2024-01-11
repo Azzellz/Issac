@@ -5,7 +5,7 @@ const app = new Issac({
     log: {
         output: 'file',
         file: {
-            path: '../a.txt'
+            path: '../log.txt'
         }
     }
 })
@@ -14,7 +14,7 @@ const router = new IssacRouter('/issac')
 
 //注册
 router.get('/get', async (req, res) => {
-    throw 1
+    // throw 1
     res.status(200).text('good!')
 })
 

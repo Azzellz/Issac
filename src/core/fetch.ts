@@ -1,4 +1,5 @@
 import { IssacErrorEventHandler, IssacEventer, defaultIssacErrorEventHandler } from "./event"
+import { IssacLogger } from "./log"
 import { IssacResponser } from "./responser"
 import { IssacRouter } from "./router"
 import { IssacRequest, IssacWrapRequest } from "./wrap-request"
@@ -24,12 +25,12 @@ export class Fetcher {
 
     public handler(): BunFetchHandler {
         return async (request) => {
-            
+
             const responser = new IssacResponser()
             const wrapRequest = new IssacWrapRequest(request)
-            
+
             try {
-                this.router.match(wrapRequest, responser)
+                await this.router.match(wrapRequest, responser)
             } catch (error) {
                 IssacEventer.emit(IssacEventer.eventSymbol.error, error)
             }

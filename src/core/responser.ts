@@ -1,3 +1,5 @@
+import { IssacLogger } from "./log"
+
 interface IssacResponserOptions {
     errorHandler?: (error: Error) => void
 }
@@ -12,10 +14,11 @@ export class IssacResponser {
     * @private
     */
     public task: Promise<Response>
+    private done: boolean //task是否完成
     private resolve: (res: Response) => void = () => { }
     private reject: (reason?: any) => void = () => { }
     private options?: IssacResponserOptions
-    private init: Bun.ResponseInit  //响应的init配置对象
+    public init: Bun.ResponseInit  //响应的init配置对象
     constructor(options?: IssacResponserOptions) {
         this.options = options
         this.init = {}
@@ -24,6 +27,7 @@ export class IssacResponser {
             this.resolve = resolve
             this.reject = reject
         })
+        this.done = false
     }
 
     /**
@@ -68,6 +72,16 @@ export class IssacResponser {
     }
 
     /**
+    * 检查操作合法性,若不合法则会给出警告
+    * @private
+    */
+    private checkWarn() {
+        if (this.done) {
+            IssacLogger.warn('Please do not call methods that trigger task resolve twice in a row.')
+        }
+    }
+
+    /**
     * 合并init:合并headers->覆盖状态码->覆盖状态描述
     * @private
     */
@@ -84,10 +98,12 @@ export class IssacResponser {
     * @public
     */
     public text(content: string = 'Hello, this is a message from Issac!', init?: Bun.ResponseInit) {
+        this.checkWarn()
         try {
             this.setHeaders('Content-Type', 'text/plain;charset=UTF-8')
             init && this.mergeInit(init)
             this.resolve(new Response(Bun.escapeHTML(content), this.init))
+            this.done = true
         } catch (error: any) {
             //执行用户注册的响应错误处理
             this.options?.errorHandler && this.options?.errorHandler(new Error(error));
@@ -108,10 +124,12 @@ export class IssacResponser {
     * @public
     */
     public HTML(content: string, init?: Bun.ResponseInit) {
+        this.checkWarn()
         try {
             this.setHeaders('Content-Type', 'text/html;charset=UTF-8')
             init && this.mergeInit(init)
             this.resolve(new Response(content, this.init))
+            this.done = true
         } catch (error: any) {
             //执行用户注册的响应错误处理
             this.options?.errorHandler && this.options?.errorHandler(new Error(error));
@@ -126,10 +144,12 @@ export class IssacResponser {
     * @public
     */
     public JSON(object: Object, init?: Bun.ResponseInit) {
+        this.checkWarn()
         try {
             this.setHeaders('Content-Type', 'application/json;charset=UTF-8')
             init && this.mergeInit(init)
             this.resolve(new Response(JSON.stringify(object), this.init))
+            this.done = true
         } catch (error: any) {
             //执行用户注册的响应错误处理
             this.options?.errorHandler && this.options?.errorHandler(new Error(error));
@@ -144,9 +164,11 @@ export class IssacResponser {
     * @public
     */
     public any<T extends Bun.BodyInit | null | undefined>(content?: T, init?: Bun.ResponseInit) {
+        this.checkWarn()
         try {
             init && this.mergeInit(init)
             this.resolve(new Response(content, this.init))
+            this.done = true
         } catch (error: any) {
             //执行用户注册的响应错误处理
             this.options?.errorHandler && this.options?.errorHandler(new Error(error));
