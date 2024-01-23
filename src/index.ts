@@ -1,5 +1,5 @@
-import { Issac } from "./core/issac";
-import { IssacRouter } from "./core/router";
+import { Issac } from './core/issac'
+import { IssacRouter } from './core/router'
 
 const app = new Issac({
     log: {
@@ -7,6 +7,11 @@ const app = new Issac({
         file: {
             path: '../log.txt'
         }
+    },
+    ws: {
+        scheduler(request) {
+            return true
+        },
     }
 })
 
@@ -20,7 +25,4 @@ router.get('/get', async (req, res) => {
 //use必须在router配置完之后
 app.use(router)
 
-
 app.listen(1145)
-
-Bun.write('./1.txt','a')
