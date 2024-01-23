@@ -6,7 +6,9 @@ import { IssacRouter } from './router'
 import { IssacRequest, IssacWrapRequest } from './wrap-request'
 
 type BunFetchHandler = (req: Request, server: Server) => Response | Promise<Response>
-export type WsUpgradeScheduler = ((request: IssacRequest) => boolean) | undefined
+export type WsUpgradeScheduler =
+    | ((request: IssacRequest, server: Server) => Response | void | boolean)
+    | undefined
 export type FetchHandler = (req: IssacRequest, res: IssacResponser) => void
 export type HttpMethod = 'GET' | 'POST' | 'DELETE' | 'PUT'
 
@@ -35,13 +37,17 @@ export class Fetcher {
             const responser = new IssacResponser()
             const wrapRequest = new IssacWrapRequest(request)
 
-            if (this.upgradeWs && this.upgradeWs(wrapRequest.request)) {
-                //TODO 可以包装升级成功/失败的情况
-                //TODO 框架最好提供ws路由的支持
-                //TODO 封装一个专门的函数用于包装原生的Response
-                return server.upgrade(request)
-                    ? new Response('Upgrade success! :>', { status: 101 })
-                    : new Response('Upgrade failed :(', { status: 500 })
+            //TODO 框架最好提供ws路由的支持
+            if (this.upgradeWs) {
+                const result = this.upgradeWs(wrapRequest.request, server)
+                if (result instanceof Response) {
+                    return result
+                } else if (typeof result === 'boolean') {
+                    //默认处理
+                    return result
+                        ? new Response('Upgrade good :>', { status: 101 })
+                        : new Response('Upgrade failed :(', { status: 500 })
+                }
             }
 
             try {

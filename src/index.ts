@@ -9,9 +9,9 @@ const app = new Issac({
         }
     },
     ws: {
-        scheduler(request) {
-            return true
-        },
+        scheduler(request, server) {
+            return server.upgrade(request)
+        }
     }
 })
 

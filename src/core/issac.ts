@@ -11,9 +11,7 @@ export interface IssacConfig {
     errorHandler?: IssacEventHandler
     log?: IssacLoggerConfig
     ws?: {
-        //upgrade调度器必须有
         scheduler: WsUpgradeScheduler
-        //处理器可选
         handler?: WebSocketHandler
     }
 }
