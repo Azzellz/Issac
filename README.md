@@ -1,8 +1,8 @@
 # issac
 
-**一个基于 Bun 的轻量级 web 后端框架**,使用纯 ts + Bun Native API 实现
+**一个基于 Bun 的轻量级 web 后端框架** , 使用纯 ts + Bun Native API 实现
 
-得益于 Bun Native API 的快速，issac 相比于 express，koa 等框架性能更好。
+得益于 Bun Native API 的快速 ，issac 相比于 express，koa 等框架性能更好。
 
 目前支持:
 
@@ -18,6 +18,24 @@
 2. 完成 websocket 路由支持 （进行中）
 
 # 快速开始
+
+因为 issac 基于 Bun Native 实现 , 所以 issac 只能在 Bun 环境使用。
+
+## 安装
+
+使用 bun 的包管理工具 **(推荐)**
+
+```bash
+bun add issac
+```
+
+使用 npm
+
+```bash
+npm install issac
+```
+
+## 启动
 
 使用 issac 创建一个简单的 http/ws 服务器：
 
@@ -54,4 +72,4 @@ app.listen(1145, () => {
 })
 ```
 
-issac 的 API 风格非常像 express,熟悉 express 的开发者可以快速上手。
+issac 的 API 风格非常像 express , 因此熟悉 express 的开发者可以快速上手。
