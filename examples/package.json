@@ -1,0 +1,11 @@
+{
+  "name": "issac-examples",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "private": "true",
+  "type": "module"
+}

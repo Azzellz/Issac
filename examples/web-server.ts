@@ -1,12 +1,6 @@
 import { Issac, IssacRouter } from '../lib'
 
 const app = new Issac({
-    log: {
-        output: 'file',
-        file: {
-            path: '../log.txt'
-        }
-    },
     ws: {
         scheduler: (req) => {
             return req.headers.get('test') === 'issac'
@@ -26,7 +20,7 @@ app.use(router)
 
 app.ws({
     open(ws) {
-        console.log('A new client!')
+        console.log('a new websocket!')
     },
     message(ws, message) {
         ws.send(message + 'plus!')

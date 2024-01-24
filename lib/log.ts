@@ -71,7 +71,7 @@ export class IssacLogger {
         const routeMethod = request.method
         const routePath = new URL(request.url).pathname
         const status = responser.init.status
-        const log = `[Issac|${Time.getFormattedTime()}]:${routeMethod} ${status} ${routePath}\n`
+        const log = `[Issac|${Time.getFormattedTime()}]:${routeMethod} ${status} ${routePath}`
         switch (this.config.output) {
             case "terminal":
                 if (status === 200) {

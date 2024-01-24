@@ -46,8 +46,6 @@ export class Fetcher {
                     if (result) {
                         server.upgrade(wrapRequest.request)
                         return new Response('Upgrade good :>', { status: 101 })
-                    } else {
-                        return new Response('Upgrade failed :(', { status: 500 })
                     }
                 }
             }
