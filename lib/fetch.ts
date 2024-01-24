@@ -13,7 +13,7 @@ export type FetchHandler = (req: IssacRequest, res: IssacResponser) => void
 export type HttpMethod = 'GET' | 'POST' | 'DELETE' | 'PUT'
 
 /**
- * 核心请求处理器
+ * 核心请求处理器,用于捕获请求并进行处理
  * @private
  */
 export class Fetcher {
@@ -43,10 +43,13 @@ export class Fetcher {
                 if (result instanceof Response) {
                     return result
                 } else if (typeof result === 'boolean') {
-                    //默认处理
-                    return result
-                        ? new Response('Upgrade good :>', { status: 101 })
-                        : new Response('Upgrade failed :(', { status: 500 })
+                    let res: Response
+                    if (result) {
+                        server.upgrade(request)
+                        res = new Response('Upgrade good :>', { status: 101 })
+                    } else {
+                        res = new Response('Upgrade failed :(', { status: 500 })
+                    }
                 }
             }
 

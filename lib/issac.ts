@@ -84,7 +84,10 @@ export class Issac {
     //覆盖ws处理器,注意这里无法再更新upgradeScheduler了
     public ws(wsHandler: WebSocketHandler) {
         if (this.config.ws) {
-            this.config.ws.handler = wsHandler
+            this.config.ws.handler = {
+                ...this.config.ws.handler,
+                ...wsHandler
+            }
         }
     }
 
