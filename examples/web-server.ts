@@ -1,5 +1,4 @@
-import { Issac } from '../lib/issac'
-import { IssacRouter } from '../lib/router'
+import { Issac, IssacRouter } from '../lib'
 
 const app = new Issac({
     log: {
@@ -10,8 +9,7 @@ const app = new Issac({
     },
     ws: {
         scheduler: (req) => {
-            console.log(req.headers.get('Sec-Websocket-Key') === 'issac')
-            return req.headers.get('Sec-Websocket-Key') === 'issac'
+            return req.headers.get('test') === 'issac'
         }
     }
 })

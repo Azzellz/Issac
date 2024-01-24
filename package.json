@@ -1,7 +1,23 @@
 {
     "name": "issac",
+    "private": "false",
+    "author": "Lin",
+    "description": "A lightweight web back-end framework based on Bun , using pure ts + Bun Native API to achieve .",
+    "version": "0.1.0",
+    "keywords": [
+        "Bun",
+        "javascript",
+        "typescript",
+        "web",
+        "backend",
+        "framework"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Azzellz/Issac"
+    },
+    "license": "MIT",
     "module": "src/index.ts",
-    "type": "module",
     "devDependencies": {
         "bun-types": "latest",
         "vitepress": "^1.0.0-rc.34"
@@ -12,6 +28,8 @@
     "scripts": {
         "docs:dev": "vitepress --host --port 1145 dev docs",
         "docs:build": "vitepress build docs",
-        "docs:preview": "vitepress preview docs"
-    }
+        "docs:preview": "vitepress preview docs",
+        "build": "bun ./scripts/build.ts"
+    },
+    "type": "module"
 }

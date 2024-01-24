@@ -43,12 +43,11 @@ export class Fetcher {
                 if (result instanceof Response) {
                     return result
                 } else if (typeof result === 'boolean') {
-                    let res: Response
                     if (result) {
-                        server.upgrade(request)
-                        res = new Response('Upgrade good :>', { status: 101 })
+                        server.upgrade(wrapRequest.request)
+                        return new Response('Upgrade good :>', { status: 101 })
                     } else {
-                        res = new Response('Upgrade failed :(', { status: 500 })
+                        return new Response('Upgrade failed :(', { status: 500 })
                     }
                 }
             }
