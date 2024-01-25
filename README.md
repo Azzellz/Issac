@@ -1,56 +1,65 @@
 # issac
 
-**一个基于 Bun 的轻量级 web 后端框架** , 使用纯 ts + Bun Native API 实现
+[![License][1]][2]
 
-得益于 Bun Native API 的快速 ，issac 相比于 express，koa 等框架性能更好。
+[1]: https://img.shields.io/badge/License-MIT-brightgreen.svg
+[2]: LICENSE
 
-目前支持:
+**[中文文档](README.zh.md)**
 
-1. 路由
-2. 中间件
-3. 内置日志
-4. 错误处理
-5. 基础的 websocket 支持(未来待完善)
+**A lightweight web backend framework based on Bun** , implemented using pure ts + Bun Native API.
+
+Thanks to the fast Bun Native API, issac performs better than express, koa and other frameworks.
+
+Currently supports.
+
+**tip: Bun provides first support for ts, which allows issac to get good type hints in js without a .d.ts file**.
+
+1. routing
+2. middleware
+3. built-in logging
+4. error handling
+5. basic websocket support (to be improved in the future)
 
 # TODO
 
-1. 完成 websocket 基本支持 （完成）
-2. 完成 websocket 路由支持 （进行中）
+1. complete basic websocket support (complete)
+2. complete websocket routing support (in progress)
 
-# 快速开始
+# Quick Start
 
-因为 issac 基于 Bun Native 实现 , 所以 issac 只能在 Bun 环境使用。
+Since issac is based on Bun Native implementation, issac can only be used in Bun environment.
 
-## 安装
+## Installation
 
-使用 bun 的包管理工具 **(推荐)**
+Use bun's package management tool **(Recommended)**.
 
 ```bash
 bun add issac
 ```
 
-使用 npm
+Using npm
 
 ```bash
 npm install issac
 ```
 
-## 启动
+## Start
 
-使用 issac 创建一个简单的 http/ws 服务器：
+Create a simple http/ws server with issac:
 
 ```typescript
 import { Issac } from 'issac'
 
 const app = new Issac({
     ws: {
-        //配置ws调度器,用于将请求升级至ws
-        //任何请求头内包含test: issac的请求将会被升级成ws
+        // Configure the ws scheduler to escalate requests to ws.
+        // Any request that contains test: issac in the request header will be escalated to ws
         scheduler: (req) => req.headers.get('test') === 'issac'
     }
 })
 
-//注册ws处理器
+// Register the ws handler
 app.ws({
     open(ws) {
         console.log('a new websocket!')
@@ -60,16 +69,16 @@ app.ws({
     }
 })
 
-//注册http路由
+// Register the http route
 app.get('/test', (req, res) => {
-    //返回一段文本
+    // Return a piece of text
     res.text('issac!')
 })
 
-//监听
+// listen
 app.listen(1145, () => {
     console.log('listen on 1145!')
 })
 ```
 
-issac 的 API 风格非常像 express , 因此熟悉 express 的开发者可以快速上手。
+issac's API style is very express-like, so developers familiar with express can get started quickly.
