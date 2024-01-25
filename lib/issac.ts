@@ -23,12 +23,16 @@ const defaultIssacConfig: IssacConfig = {
     ws: undefined
 }
 
+/**
+ * Issac instance, provides API for writing back-end interface
+ * @public
+ */
 export class Issac {
     public server: Server = {} as Server
     private config: IssacConfig
     private fetcher: Fetcher
     constructor(config: IssacConfig = defaultIssacConfig) {
-        //初始化各配置
+        //init all configs
         this.config = {
             router: config.router ? config.router : defaultIssacRouterConfig,
             errorHandler: config.errorHandler ? config.errorHandler : defaultIssacErrorEventHandler,
@@ -43,27 +47,42 @@ export class Issac {
         )
     }
 
-    //get注册接口
+    /**
+     * Register the route processing function of the get method
+     * @public
+     */
     public get(url: string, ...handlers: Array<FetchHandler>) {
         this.fetcher.router.get(url, ...handlers)
     }
 
-    //post注册接口
+    /**
+     * Register the route processing function of the post method
+     * @public
+     */
     public post(url: string, ...handlers: Array<FetchHandler>) {
         this.fetcher.router.post(url, ...handlers)
     }
 
-    //delete注册接口
+    /**
+     * Register the route processing function of the delete method
+     * @public
+     */
     public delete(url: string, ...handlers: Array<FetchHandler>) {
         this.fetcher.router.delete(url, ...handlers)
     }
 
-    //put注册接口
+    /**
+     * Register the route processing function of the put method
+     * @public
+     */
     public put(url: string, ...handlers: Array<FetchHandler>) {
         this.fetcher.router.put(url, ...handlers)
     }
 
-    //any注册接口,用于注册一些不常用的方法,避免污染方法空间
+    /**
+     * Register the route processing function of the delete method,used to register some uncommon methods to avoid polluting the method space
+     * @public
+     */
     public any(
         method:
             | 'GET'
@@ -81,7 +100,10 @@ export class Issac {
         this.fetcher.router.any(method, url, ...handlers)
     }
 
-    //覆盖ws处理器,注意这里无法再更新upgradeScheduler了
+    /**
+     * Cover the ws processor. Note that the upgradeScheduler cannot be updated here.
+     * @public
+     */
     public ws(wsHandler: WebSocketHandler) {
         if (this.config.ws) {
             this.config.ws.handler = {
@@ -91,7 +113,10 @@ export class Issac {
         }
     }
 
-    //使用中间件/合并路由器
+    /**
+     * Use middleware or merge routers
+     * @public
+     */
     public use(...items: Array<IssacRouter | IssacMiddleware | IssacMiddlewareHandler>) {
         items.forEach((item) => {
             if (item instanceof IssacRouter) {
@@ -104,7 +129,10 @@ export class Issac {
         })
     }
 
-    //启动监听
+    /**
+     * Start listening
+     * @public
+     */
     public listen(
         port: number,
         onListen: () => void = () => console.log(`Now server is listening on ${port}`)

@@ -4,7 +4,6 @@ export interface IssacMiddlewareConfig {}
 
 export const defaultIssacMiddlewareConfig: IssacMiddlewareConfig = {}
 
-//中间件实例
 export class IssacMiddleware {
     public handler: IssacMiddlewareHandler
     public config: IssacMiddlewareConfig

@@ -1,27 +1,26 @@
 /**
-* 拓展请求
-* @public
-*/
+ * Extend native requests
+ * @public
+ */
 export interface IssacRequest extends Request {
-    query: Record<string, string | number>  //封装好的query
-    payload: any    //自定义负载
+    query: Record<string, string | number> //Encapsulated query
+    payload: any //anything
 }
 
 /**
-* 包装请求
-* @private
-*/
+ * WrapRequest
+ * @private
+ */
 export class IssacWrapRequest {
     public origin: Request
     public request: IssacRequest
     constructor(origin: Request) {
         this.origin = origin
-        //伪初始化
+        //Pseudo-initialization
         this.request = origin as any
-        //拓展包装
+        //Extend query
         this.request = this.wrapQuery(this.request)
     }
-    //包装query
     private wrapQuery(req: IssacRequest): IssacRequest {
         req.query = {}
         const url = new URL(req.url)
@@ -30,6 +29,4 @@ export class IssacWrapRequest {
         })
         return req
     }
-
-
 }

@@ -10,12 +10,10 @@ const app = new Issac({
 
 const router = new IssacRouter('/issac')
 
-//注册
 router.get('/get', async (req, res) => {
     res.status(200).text('good!')
 })
 
-//use必须在router配置完之后
 app.use(router)
 
 app.ws({

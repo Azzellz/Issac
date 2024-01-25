@@ -1,30 +1,30 @@
-import { IssacRequest } from './wrap-request';
-import { IssacLogger } from './log';
+import { IssacRequest } from './wrap-request'
+import { IssacLogger } from './log'
 
 export type IssacEventHandler = (...args: any) => void
 export type IssacErrorEventHandler = (error: Error, request: IssacRequest) => void
 
 /**
-* 默认的错误事件处理函数
-* @private
-*/
+ * Default errorHandler
+ * @internal
+ */
 export const defaultIssacErrorEventHandler: IssacErrorEventHandler = (error, request) => {
-    //1.调用日志器打印
+    //1. print log
     IssacLogger.error(error, request)
-    //TODO 2.具体的错误处理逻辑
+    //TODO 2.Specific error handling logic
 }
 
 /**
-* 全局静态事件器
-* @private
-*/
+ * Global eventer to deal with error or warning
+ * @internal
+ */
 export class IssacEventer {
     public static eventSymbol = {
-        error: Symbol("ErrorEvent"),
-        warning: Symbol("WarningEvent")
+        error: Symbol('ErrorEvent'),
+        warning: Symbol('WarningEvent')
     }
     private static eventHandlersMap = new Map<symbol, IssacEventHandler>()
-    //TODO 使用泛型改造
+    //TODO Use generic conversions to provide better type hints
     public static emit(eventSymbol: symbol, ...args: any) {
         const handler = this.eventHandlersMap.get(eventSymbol)
         handler && handler(...args)
@@ -35,4 +35,3 @@ export class IssacEventer {
         }
     }
 }
-

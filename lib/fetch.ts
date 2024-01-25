@@ -1,7 +1,6 @@
 import { Server } from 'bun'
 import { IssacErrorEventHandler, IssacEventer, defaultIssacErrorEventHandler } from './event'
-import { IssacLogger } from './log'
-import { IssacResponser } from './responser'
+import { IssacResponse } from './response'
 import { IssacRouter } from './router'
 import { IssacRequest, IssacWrapRequest } from './wrap-request'
 
@@ -9,17 +8,17 @@ type BunFetchHandler = (req: Request, server: Server) => Response | Promise<Resp
 export type WsUpgradeScheduler =
     | ((request: IssacRequest, server: Server) => Response | void | boolean)
     | undefined
-export type FetchHandler = (req: IssacRequest, res: IssacResponser) => void
+export type FetchHandler = (req: IssacRequest, res: IssacResponse) => void
 export type HttpMethod = 'GET' | 'POST' | 'DELETE' | 'PUT'
 
 /**
- * 核心请求处理器,用于捕获请求并进行处理
- * @private
+ * A core request processor that captures requests and processes them
+ * @internal
  */
 export class Fetcher {
     public router: IssacRouter
     public errorHandler: IssacErrorEventHandler
-    public upgradeWs: WsUpgradeScheduler //升级websocket
+    public upgradeWs: WsUpgradeScheduler //Upgrade to websocket
     constructor(
         router: IssacRouter = new IssacRouter(),
         errorHandler: IssacErrorEventHandler = defaultIssacErrorEventHandler,
@@ -28,16 +27,16 @@ export class Fetcher {
         this.router = router
         this.errorHandler = errorHandler
         this.upgradeWs = upgradeWs
-        //绑定的错误事件回调函数
+        //Bound error event callback function
         IssacEventer.on(IssacEventer.eventSymbol.error, errorHandler)
     }
 
     public handler(): BunFetchHandler {
         return async (request, server) => {
-            const responser = new IssacResponser()
+            const response = new IssacResponse()
             const wrapRequest = new IssacWrapRequest(request)
 
-            //TODO 框架最好提供ws路由的支持
+            //TODO The framework should ideally provide support for ws routing
             if (this.upgradeWs) {
                 const result = this.upgradeWs(wrapRequest.request, server)
                 if (result instanceof Response) {
@@ -51,14 +50,14 @@ export class Fetcher {
             }
 
             try {
-                await this.router.match(wrapRequest, responser)
+                await this.router.match(wrapRequest, response)
             } catch (error) {
                 IssacEventer.emit(IssacEventer.eventSymbol.error, error)
             }
 
-            return responser.task.catch((reason) => {
+            return response.task.catch((reason) => {
                 this.errorHandler(new Error(reason), wrapRequest.request)
-                return responser.task
+                return response.task
             })
         }
     }

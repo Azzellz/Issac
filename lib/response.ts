@@ -1,29 +1,29 @@
-import { IssacLogger } from "./log"
+import { IssacLogger } from './log'
 
 interface IssacResponserOptions {
     errorHandler?: (error: Error) => void
 }
 
 /**
-* 请求响应者
-* @private
-*/
-export class IssacResponser {
+ * Response
+ * @internal
+ */
+export class IssacResponse {
     /**
-    * Promise-Task异步模型
-    * @private
-    */
+     * Promise-Task
+     * @private
+     */
     public task: Promise<Response>
-    private done: boolean //task是否完成
-    private resolve: (res: Response) => void = () => { }
-    private reject: (reason?: any) => void = () => { }
+    private done: boolean //is task done
+    private resolve: (res: Response) => void = () => {}
+    private reject: (reason?: any) => void = () => {}
     private options?: IssacResponserOptions
-    public init: Bun.ResponseInit  //响应的init配置对象
+    public init: Bun.ResponseInit
     constructor(options?: IssacResponserOptions) {
         this.options = options
         this.init = {}
         this.task = new Promise((resolve, reject) => {
-            //捕获Promise处理器
+            //capture resolve and reject
             this.resolve = resolve
             this.reject = reject
         })
@@ -31,50 +31,50 @@ export class IssacResponser {
     }
 
     /**
-    * 以key->value的形式配置响应头
-    * @public
-    */
+     * Configure the response header in the form of key:value
+     * @public
+     */
     public setHeaders(key: string, value: string) {
         if (!this.init.headers) {
             this.init.headers = {}
             this.init.headers[key] = value
         } else {
-            (this.init.headers as Record<string, string>)[key] = value
+            ;(this.init.headers as Record<string, string>)[key] = value
         }
         return this
     }
 
     /**
-    * 设置响应状态码
-    * @public
-    */
+     * Set the response status code
+     * @public
+     */
     public status(code: number) {
         this.init.status = code
         return this
     }
 
     /**
-    * 重置响应头(覆盖)
-    * @public
-    */
+     * Reset Response Header (Overlay)
+     * @public
+     */
     public resetHeaders(headers: Bun.HeadersInit) {
         this.init.headers = headers
         return this
     }
 
     /**
-    * 合并响应头
-    * @public
-    */
+     * Merge response headers
+     * @public
+     */
     public mergeHeaders(headers: Bun.HeadersInit) {
         this.init.headers = { ...this.init.headers, ...headers }
         return this
     }
 
     /**
-    * 检查操作合法性,若不合法则会给出警告
-    * @private
-    */
+     * Check the legality of the operation and give a warning if it is not
+     * @private
+     */
     private checkWarn() {
         if (this.done) {
             IssacLogger.warn('Please do not call methods that trigger task resolve twice in a row.')
@@ -82,21 +82,21 @@ export class IssacResponser {
     }
 
     /**
-    * 合并init:合并headers->覆盖状态码->覆盖状态描述
-    * @private
-    */
+     * Merge init: merge headers-> override status code-> override status description
+     * @private
+     */
     private mergeInit(init: Bun.ResponseInit) {
         if (init) {
             this.init.headers = { ...this.init.headers, ...init.headers }
             this.init.status = init.status || 200
-            this.init.statusText = init.statusText || "OK"
+            this.init.statusText = init.statusText || 'OK'
         }
     }
 
     /**
-    * 以文本形式(含隐式HTML转义)结束task
-    * @public
-    */
+     * Terminate the task as text (with implicit HTML escaping).
+     * @public
+     */
     public text(content: string = 'Hello, this is a message from Issac!', init?: Bun.ResponseInit) {
         this.checkWarn()
         try {
@@ -105,24 +105,22 @@ export class IssacResponser {
             this.resolve(new Response(Bun.escapeHTML(content), this.init))
             this.done = true
         } catch (error: any) {
-            //执行用户注册的响应错误处理
-            this.options?.errorHandler && this.options?.errorHandler(new Error(error));
+            this.options?.errorHandler && this.options?.errorHandler(new Error(error))
             this.reject(`Error in responser.text\ndetail:${error}`)
         } finally {
             return this
         }
-
     }
 
     /**
-    * 以HTML结束task
-    * @example
-    * 使用Bun.file读取'../bar.html'文件内的内容并以HTML的格式发送
-    *   app.get('/foo', async (req, res) => {
-    *        res.HTML(await Bun.file('../bar.html').text())
-    *   })
-    * @public
-    */
+     * End the task with HTML
+     * @example
+     * Read with Bun.file '/bar.html' file and send it in HTML format
+     *   app.get('/foo', async (req, res) => {
+     *        res.HTML(await Bun.file('../bar.html').text())
+     *   })
+     * @public
+     */
     public HTML(content: string, init?: Bun.ResponseInit) {
         this.checkWarn()
         try {
@@ -131,8 +129,7 @@ export class IssacResponser {
             this.resolve(new Response(content, this.init))
             this.done = true
         } catch (error: any) {
-            //执行用户注册的响应错误处理
-            this.options?.errorHandler && this.options?.errorHandler(new Error(error));
+            this.options?.errorHandler && this.options?.errorHandler(new Error(error))
             this.reject(`Error in responser.text\ndetail:${error}`)
         } finally {
             return this
@@ -140,9 +137,9 @@ export class IssacResponser {
     }
 
     /**
-    * 以JSON格式结束task
-    * @public
-    */
+     * End the task with JSON
+     * @public
+     */
     public JSON(object: Object, init?: Bun.ResponseInit) {
         this.checkWarn()
         try {
@@ -151,8 +148,7 @@ export class IssacResponser {
             this.resolve(new Response(JSON.stringify(object), this.init))
             this.done = true
         } catch (error: any) {
-            //执行用户注册的响应错误处理
-            this.options?.errorHandler && this.options?.errorHandler(new Error(error));
+            this.options?.errorHandler && this.options?.errorHandler(new Error(error))
             this.reject(`Error in responser.text\ndetail:${error}`)
         } finally {
             return this
@@ -160,9 +156,9 @@ export class IssacResponser {
     }
 
     /**
-    * 以任意满足Bun.BodyInit的数据结束task
-    * @public
-    */
+     * Ends the task with any data that satisfies Bun.BodyInit
+     * @public
+     */
     public any<T extends Bun.BodyInit | null | undefined>(content?: T, init?: Bun.ResponseInit) {
         this.checkWarn()
         try {
@@ -170,12 +166,10 @@ export class IssacResponser {
             this.resolve(new Response(content, this.init))
             this.done = true
         } catch (error: any) {
-            //执行用户注册的响应错误处理
-            this.options?.errorHandler && this.options?.errorHandler(new Error(error));
+            this.options?.errorHandler && this.options?.errorHandler(new Error(error))
             this.reject(`Error in responser.any\ndetail:${error}`)
         } finally {
             return this
         }
     }
-
 }

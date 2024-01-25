@@ -1,10 +1,14 @@
-import { FetchHandler } from "../fetch";
-import { IssacMiddleware } from "../middleware";
-import { IssacMiddlewareMgrConfig, defaultIssacMiddlewareMgrConfig, IssacMiddlewareMgr } from "../middleware/mgr";
+import { FetchHandler } from '../fetch'
+import { IssacMiddleware } from '../middleware'
+import {
+    IssacMiddlewareMgrConfig,
+    defaultIssacMiddlewareMgrConfig,
+    IssacMiddlewareMgr
+} from '../middleware/mgr'
 
-import { IssacResponser } from "../responser";
-import { IssacWrapRequest } from "../wrap-request";
-import { RouterModule } from "./module";
+import { IssacResponse } from '../response'
+import { IssacWrapRequest } from '../wrap-request'
+import { RouterModule } from './module'
 
 export interface IssacRouterConfig {
     //合并相关
@@ -62,7 +66,17 @@ export class IssacRouter {
         this.patchModule = new RouterModule()
 
         //方便遍历,注意这里要保证顺序
-        this.modules = [this.getModule, this.postModule, this.deleteModule, this.putModule, this.headModule, this.connectModule, this.optionsModule, this.traceModule, this.patchModule]
+        this.modules = [
+            this.getModule,
+            this.postModule,
+            this.deleteModule,
+            this.putModule,
+            this.headModule,
+            this.connectModule,
+            this.optionsModule,
+            this.traceModule,
+            this.patchModule
+        ]
     }
 
     //注册中间件
@@ -123,33 +137,46 @@ export class IssacRouter {
     }
 
     //any注册接口,可用于动态注册
-    public any(method: 'GET' | 'HEAD' | 'POST' | 'PUT' | 'DELETE' | 'CONNECT' | 'OPTIONS' | 'TRACE' | 'PATCH', url: string, ...handlers: Array<FetchHandler>) {
+    public any(
+        method:
+            | 'GET'
+            | 'HEAD'
+            | 'POST'
+            | 'PUT'
+            | 'DELETE'
+            | 'CONNECT'
+            | 'OPTIONS'
+            | 'TRACE'
+            | 'PATCH',
+        url: string,
+        ...handlers: Array<FetchHandler>
+    ) {
         switch (method) {
-            case "GET":
+            case 'GET':
                 this.get(url, ...handlers)
                 break
-            case "POST":
+            case 'POST':
                 this.post(url, ...handlers)
                 break
-            case "PUT":
+            case 'PUT':
                 this.put(url, ...handlers)
                 break
-            case "DELETE":
+            case 'DELETE':
                 this.delete(url, ...handlers)
                 break
-            case "HEAD":
+            case 'HEAD':
                 this.head(url, ...handlers)
                 break
-            case "CONNECT":
+            case 'CONNECT':
                 this.connect(url, ...handlers)
                 break
-            case "OPTIONS":
+            case 'OPTIONS':
                 this.options(url, ...handlers)
                 break
-            case "TRACE":
+            case 'TRACE':
                 this.trace(url, ...handlers)
                 break
-            case "PATCH":
+            case 'PATCH':
                 this.patch(url, ...handlers)
                 break
             default:
@@ -159,14 +186,14 @@ export class IssacRouter {
     }
 
     //匹配各模块执行
-    public async match({ request }: IssacWrapRequest, responser: IssacResponser) {
+    public async match({ request }: IssacWrapRequest, responser: IssacResponse) {
         //等待中间件执行完毕
         await this.middlewareMgr.do(request, responser)
         //匹配
         switch (request.method) {
             case 'GET':
                 this.getModule.do(request, responser)
-                break;
+                break
             case 'POST':
                 this.postModule.do(request, responser)
                 break
@@ -178,7 +205,7 @@ export class IssacRouter {
                 break
             case 'CONNECT':
                 this.connectModule.do(request, responser)
-                break;
+                break
             case 'OPTIONS':
                 this.optionsModule.do(request, responser)
                 break
@@ -189,7 +216,7 @@ export class IssacRouter {
                 this.patchModule.do(request, responser)
                 break
             default:
-                break;
+                break
         }
     }
 

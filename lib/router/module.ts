@@ -1,8 +1,8 @@
-import { IssacEventer } from "../event"
-import { FetchHandler } from "../fetch"
-import { IssacLogger } from "../log"
-import { IssacResponser } from "../responser"
-import { IssacRequest } from "../wrap-request"
+import { IssacEventer } from '../event'
+import { FetchHandler } from '../fetch'
+import { IssacLogger } from '../log'
+import { IssacResponse } from '../response'
+import { IssacRequest } from '../wrap-request'
 
 //路由子模块
 export class RouterModule {
@@ -37,7 +37,7 @@ export class RouterModule {
     }
 
     //执行
-    public async do(request: IssacRequest, responser: IssacResponser): Promise<void> {
+    public async do(request: IssacRequest, responser: IssacResponse): Promise<void> {
         const routePath = new URL(request.url).pathname
         const handlers = this.handlerMap.get(routePath)
         if (handlers) {
@@ -54,7 +54,11 @@ export class RouterModule {
                     } catch (error) {
                         //触发错误事件处理
                         resolve(false)
-                        IssacEventer.emit(IssacEventer.eventSymbol.error, new Error(error as any), request)
+                        IssacEventer.emit(
+                            IssacEventer.eventSymbol.error,
+                            new Error(error as any),
+                            request
+                        )
                     }
                     //判断是否为最后一个
                     if (++count === handlers.size) {
@@ -73,8 +77,6 @@ export class RouterModule {
             } catch (error) {
                 IssacEventer.emit(IssacEventer.eventSymbol.error, error, request)
             }
-
         }
-
     }
 }

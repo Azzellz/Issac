@@ -1,6 +1,6 @@
-import { IssacResponser } from "./responser"
-import { IssacRequest } from "./wrap-request"
-import { appendFile } from "fs/promises"
+import { IssacResponse } from './response'
+import { IssacRequest } from './wrap-request'
+import { appendFile } from 'fs/promises'
 
 namespace Color {
     type IssacColor = 'RESET' | 'RED' | 'GREEN' | 'YELLOW' | 'BLUE'
@@ -9,7 +9,7 @@ namespace Color {
         RED: '\x1b[31m',
         GREEN: '\x1b[32m',
         YELLOW: '\x1b[33m',
-        BLUE: '\x1b[34m',
+        BLUE: '\x1b[34m'
     }
     export function getColoredText(content: string, color: IssacColor) {
         return COLOR[color] + content + COLOR.RESET
@@ -31,24 +31,22 @@ namespace Time {
     }
 }
 
-//TODO 请求IP溯源
+//TODO Request IP address traceability
 export interface IssacLoggerConfig {
-    off?: boolean //是否关闭日志
-    output: 'terminal' | 'file' //输出方式
-    file?: {    //以文件模式输出时配置的
+    off?: boolean
+    output: 'terminal' | 'file'
+    file?: {
         path: string
         maxRecord?: number
     }
-    terminal?: {
-
-    }
+    terminal?: {}
 }
 
 export const defaultIssacLoggerConfig: IssacLoggerConfig = {
     output: 'terminal'
 }
 
-//TODO 全局静态日志打印器类,需要实现写入文件
+// Global static log printer class
 export class IssacLogger {
     public static config: IssacLoggerConfig = defaultIssacLoggerConfig
     public static warn(content: string) {
@@ -56,32 +54,32 @@ export class IssacLogger {
 
         const log = `[Issac-Warn|${Time.getFormattedTime()}]:${content}\n`
         switch (this.config.output) {
-            case "terminal":
+            case 'terminal':
                 console.error(Color.getColoredText(log, 'YELLOW'))
                 break
-            case "file":
+            case 'file':
                 if (this.config.file) {
                     appendFile(this.config.file.path, log)
                 }
                 break
         }
     }
-    public static normal(request: IssacRequest, responser: IssacResponser) {
+    public static normal(request: IssacRequest, responser: IssacResponse) {
         if (this.config.off) return
         const routeMethod = request.method
         const routePath = new URL(request.url).pathname
         const status = responser.init.status
         const log = `[Issac|${Time.getFormattedTime()}]:${routeMethod} ${status} ${routePath}`
         switch (this.config.output) {
-            case "terminal":
+            case 'terminal':
                 if (status === 200) {
                     console.log(Color.getColoredText(log, 'GREEN'))
                 } else {
-                    //TODO 其他状态码的多颜色支持
+                    //TODO Need to support more color!
                     console.log(Color.getColoredText(log, 'BLUE'))
                 }
                 break
-            case "file":
+            case 'file':
                 if (this.config.file) {
                     appendFile(this.config.file.path, log)
                 }
@@ -94,10 +92,10 @@ export class IssacLogger {
         const routePath = new URL(request.url).pathname
         const log = `[Issac-Error|${Time.getFormattedTime()}]:${routeMethod} ${routePath} ${error}\n`
         switch (this.config.output) {
-            case "terminal":
+            case 'terminal':
                 console.error(Color.getColoredText(log, 'RED'))
                 break
-            case "file":
+            case 'file':
                 if (this.config.file) {
                     appendFile(this.config.file.path, log)
                 }
