@@ -1,15 +1,18 @@
 # issac
 
-[![License][1]][2]
+[license-svg]: https://img.shields.io/badge/license-MIT-brightgreen.svg
+[npm-svg]: https://img.shields.io/badge/npm-v1.0.0-red.svg
+[npm-url]: https://www.npmjs.com/package/issac
+[bun-svg]: https://img.shields.io/badge/bun-v1.0.25-blue.svg
+[bun-url]: https://bun.sh/
 
-[1]: https://img.shields.io/badge/License-MIT-brightgreen.svg
-[2]: LICENSE
+[![license][license-svg]](LICENSE) [![npm][npm-svg]][npm-url] [![bun][bun-svg]][bun-url]
 
-**一个基于 Bun 的轻量级 web 后端框架** , 使用纯 ts + Bun Native API 实现
+**一个基于 bun 的轻量级 web 后端框架** , 使用纯 ts + bun native 实现
 
-得益于 Bun Native API ，issac 有着不错的性能
+得益于 bun native ，issac 有着不错的性能
 
-**tip: Bun 对 ts 提供第一支持,这使得 issac 不需要.d.ts 文件也能在 js 中获得良好的类型提示**
+**tip: bun 对 ts 提供第一支持,这使得 issac 不需要.d.ts 文件也能在 js 中获得良好的类型提示**
 
 目前支持:
 
@@ -26,7 +29,7 @@
 
 # 快速开始
 
-因为 issac 基于 Bun Native 实现 , 所以 issac 只能在 Bun 环境使用。
+因为 issac 基于 bun native 实现 , 所以 issac 只能在 bun 环境使用。
 
 ## 安装
 
