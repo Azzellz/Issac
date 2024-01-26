@@ -7,5 +7,9 @@
     "typescript": "^5.0.0"
   },
   "private": "true",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "elysia": "^0.8.14",
+    "issac": "^1.0.0"
+  }
 }

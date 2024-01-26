@@ -27,6 +27,7 @@ const defaultIssacConfig: IssacConfig = {
  * Issac instance, provides API for writing back-end interface
  * @public
  */
+//TODO 引入声明周期和类型安全
 export class Issac {
     public server: Server = {} as Server
     private config: IssacConfig
@@ -137,6 +138,7 @@ export class Issac {
         port: number,
         onListen: () => void = () => console.log(`Now server is listening on ${port}`)
     ) {
+        //TODO Need to support bun native config , For example tls
         this.server = Bun.serve({
             port,
             fetch: this.fetcher.handler(),

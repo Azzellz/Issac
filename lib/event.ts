@@ -19,6 +19,7 @@ export const defaultIssacErrorEventHandler: IssacErrorEventHandler = (error, req
  * @internal
  */
 export class IssacEventer {
+    //TODO 因为不对外导出,所以可以不用symbol,直接使用字面量标识
     public static eventSymbol = {
         error: Symbol('ErrorEvent'),
         warning: Symbol('WarningEvent')

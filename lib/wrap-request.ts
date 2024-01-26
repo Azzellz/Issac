@@ -4,6 +4,7 @@
  */
 export interface IssacRequest extends Request {
     query: Record<string, string | number> //Encapsulated query
+    params: Record<string, string> //路径参数
     payload: any //anything
 }
 
@@ -19,14 +20,20 @@ export class IssacWrapRequest {
         //Pseudo-initialization
         this.request = origin as any
         //Extend query
-        this.request = this.wrapQuery(this.request)
+        this.wrap(this.request)
     }
-    private wrapQuery(req: IssacRequest): IssacRequest {
+    private wrap(req: IssacRequest) {
+        this.wrapQuery(req)
+        this.wrapParams(req)
+    }
+    private wrapParams(req: IssacRequest) {
+        
+    }
+    private wrapQuery(req: IssacRequest) {
         req.query = {}
         const url = new URL(req.url)
         url.searchParams.forEach((value, key) => {
             req.query[key] = value
         })
-        return req
     }
 }

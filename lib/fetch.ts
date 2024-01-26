@@ -33,10 +33,10 @@ export class Fetcher {
 
     public handler(): BunFetchHandler {
         return async (request, server) => {
+            console.log(request)
             const response = new IssacResponse()
             const wrapRequest = new IssacWrapRequest(request)
 
-            //TODO The framework should ideally provide support for ws routing
             if (this.upgradeWs) {
                 const result = this.upgradeWs(wrapRequest.request, server)
                 if (result instanceof Response) {

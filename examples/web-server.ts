@@ -8,13 +8,11 @@ const app = new Issac({
     }
 })
 
-const router = new IssacRouter('/issac')
 
-router.get('/get', async (req, res) => {
+app.get('/:id', async (req, res) => {
     res.status(200).text('good!')
 })
 
-app.use(router)
 
 app.ws({
     open(ws) {

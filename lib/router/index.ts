@@ -186,34 +186,35 @@ export class IssacRouter {
     }
 
     //匹配各模块执行
+    //TODO 应该采用效率更高的匹配模式???
     public async match({ request }: IssacWrapRequest, responser: IssacResponse) {
         //等待中间件执行完毕
         await this.middlewareMgr.do(request, responser)
         //匹配
         switch (request.method) {
             case 'GET':
-                this.getModule.do(request, responser)
+                this.getModule.match(request, responser)
                 break
             case 'POST':
-                this.postModule.do(request, responser)
+                this.postModule.match(request, responser)
                 break
             case 'PUT':
-                this.putModule.do(request, responser)
+                this.putModule.match(request, responser)
                 break
             case 'DELETE':
-                this.deleteModule.do(request, responser)
+                this.deleteModule.match(request, responser)
                 break
             case 'CONNECT':
-                this.connectModule.do(request, responser)
+                this.connectModule.match(request, responser)
                 break
             case 'OPTIONS':
-                this.optionsModule.do(request, responser)
+                this.optionsModule.match(request, responser)
                 break
             case 'TRACE':
-                this.traceModule.do(request, responser)
+                this.traceModule.match(request, responser)
                 break
             case 'PATCH':
-                this.patchModule.do(request, responser)
+                this.patchModule.match(request, responser)
                 break
             default:
                 break

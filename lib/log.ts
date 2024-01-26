@@ -52,7 +52,7 @@ export class IssacLogger {
     public static warn(content: string) {
         if (this.config.off) return
 
-        const log = `[Issac-Warn|${Time.getFormattedTime()}]:${content}\n`
+        const log = `[Issac-Warn|${Time.getFormattedTime()}]:${content}`
         switch (this.config.output) {
             case 'terminal':
                 console.error(Color.getColoredText(log, 'YELLOW'))
@@ -90,7 +90,7 @@ export class IssacLogger {
         if (this.config.off) return
         const routeMethod = request.method
         const routePath = new URL(request.url).pathname
-        const log = `[Issac-Error|${Time.getFormattedTime()}]:${routeMethod} ${routePath} ${error}\n`
+        const log = `[Issac-Error|${Time.getFormattedTime()}]:${routeMethod} ${routePath} ${error}`
         switch (this.config.output) {
             case 'terminal':
                 console.error(Color.getColoredText(log, 'RED'))
