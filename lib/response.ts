@@ -21,13 +21,24 @@ export class IssacResponse {
     public init: Bun.ResponseInit
     constructor(options?: IssacResponserOptions) {
         this.options = options
-        this.init = {}
+        this.init = {
+            status: 200,
+            statusText: 'OK'
+        }
         this.task = new Promise((resolve, reject) => {
             //capture resolve and reject
             this.resolve = resolve
             this.reject = reject
         })
         this.done = false
+    }
+
+    /**
+     * Whether the task has completed
+     * @public
+     */
+    public get isDone(): boolean {
+        return this.done
     }
 
     /**
@@ -48,8 +59,24 @@ export class IssacResponse {
      * Set the response status code
      * @public
      */
-    public status(code: number) {
+    public status(code: number, text: string = '') {
         this.init.status = code
+
+        if (text!) {
+            if (code >= 500 && code < 600) {
+                text = 'Server Error'
+            } else if (code >= 400 && code < 500) {
+                text = 'Client Error'
+            } else if (code >= 300 && code < 400) {
+                text = 'Redirect'
+            } else if (code >= 200 && code < 300) {
+                text = 'OK'
+            } else if (code >= 100 && code < 200) {
+                text = 'Info'
+            }
+        }
+
+        this.init.statusText = text
         return this
     }
 

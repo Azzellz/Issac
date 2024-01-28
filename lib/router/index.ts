@@ -1,14 +1,12 @@
-import { FetchHandler } from '../fetch'
+import { FetchContext, FetchHandler, HttpMethod } from '../fetch'
 import { IssacMiddleware } from '../middleware'
 import {
     IssacMiddlewareMgrConfig,
     defaultIssacMiddlewareMgrConfig,
     IssacMiddlewareMgr
 } from '../middleware/mgr'
-
-import { IssacResponse } from '../response'
-import { IssacWrapRequest } from '../wrap-request'
 import { RouterModule } from './module'
+import { HttpRouteUnit } from './unit'
 
 export interface IssacRouterConfig {
     //合并相关
@@ -34,16 +32,16 @@ export class IssacRouter {
     //中间件Mgr
     private middlewareMgr: IssacMiddlewareMgr
     //子模块
-    private getModule: RouterModule
-    private postModule: RouterModule
-    private deleteModule: RouterModule
-    private putModule: RouterModule
-    private headModule: RouterModule
-    private connectModule: RouterModule
-    private optionsModule: RouterModule
-    private traceModule: RouterModule
-    private patchModule: RouterModule
-    private modules: Array<RouterModule>
+    private getModule: RouterModule<HttpRouteUnit>
+    private postModule: RouterModule<HttpRouteUnit>
+    private deleteModule: RouterModule<HttpRouteUnit>
+    private putModule: RouterModule<HttpRouteUnit>
+    private headModule: RouterModule<HttpRouteUnit>
+    private connectModule: RouterModule<HttpRouteUnit>
+    private optionsModule: RouterModule<HttpRouteUnit>
+    private traceModule: RouterModule<HttpRouteUnit>
+    private patchModule: RouterModule<HttpRouteUnit>
+    private modules: Array<RouterModule<HttpRouteUnit>>
     constructor(base: string = '', config: IssacRouterConfig = defaultIssacRouterConfig) {
         //配置路由根路径
         this.base = base
@@ -93,64 +91,51 @@ export class IssacRouter {
 
     //get方法注册接口
     public get(url: string, ...handlers: Array<FetchHandler>) {
-        this.getModule.add(this.wrapUrl(url), new Set(handlers))
+        this.getModule.add(new HttpRouteUnit(this.wrapUrl(url), new Set(handlers)))
     }
 
     //post方法注册接口
     public post(url: string, ...handlers: Array<FetchHandler>) {
-        this.postModule.add(this.wrapUrl(url), new Set(handlers))
+        this.postModule.add(new HttpRouteUnit(this.wrapUrl(url), new Set(handlers)))
     }
 
     //delete方法注册接口
     public delete(url: string, ...handlers: Array<FetchHandler>) {
-        this.deleteModule.add(this.wrapUrl(url), new Set(handlers))
+        this.deleteModule.add(new HttpRouteUnit(this.wrapUrl(url), new Set(handlers)))
     }
 
     //put方法注册接口
     public put(url: string, ...handlers: Array<FetchHandler>) {
-        this.putModule.add(this.wrapUrl(url), new Set(handlers))
+        this.putModule.add(new HttpRouteUnit(this.wrapUrl(url), new Set(handlers)))
     }
 
     //head方法注册接口
     public head(url: string, ...handlers: Array<FetchHandler>) {
-        this.headModule.add(this.wrapUrl(url), new Set(handlers))
+        this.headModule.add(new HttpRouteUnit(this.wrapUrl(url), new Set(handlers)))
     }
 
     //connect方法注册接口
     public connect(url: string, ...handlers: Array<FetchHandler>) {
-        this.connectModule.add(this.wrapUrl(url), new Set(handlers))
+        this.connectModule.add(new HttpRouteUnit(this.wrapUrl(url), new Set(handlers)))
     }
 
     //options方法注册接口
     public options(url: string, ...handlers: Array<FetchHandler>) {
-        this.optionsModule.add(this.wrapUrl(url), new Set(handlers))
+        this.optionsModule.add(new HttpRouteUnit(this.wrapUrl(url), new Set(handlers)))
     }
 
     //trace方法注册接口
     public trace(url: string, ...handlers: Array<FetchHandler>) {
-        this.traceModule.add(this.wrapUrl(url), new Set(handlers))
+        this.traceModule.add(new HttpRouteUnit(this.wrapUrl(url), new Set(handlers)))
     }
 
     //patch方法注册接口
     public patch(url: string, ...handlers: Array<FetchHandler>) {
-        this.patchModule.add(this.wrapUrl(url), new Set(handlers))
+        this.patchModule.add(new HttpRouteUnit(this.wrapUrl(url), new Set(handlers)))
     }
 
     //any注册接口,可用于动态注册
-    public any(
-        method:
-            | 'GET'
-            | 'HEAD'
-            | 'POST'
-            | 'PUT'
-            | 'DELETE'
-            | 'CONNECT'
-            | 'OPTIONS'
-            | 'TRACE'
-            | 'PATCH',
-        url: string,
-        ...handlers: Array<FetchHandler>
-    ) {
+    public any(method: HttpMethod, url: string, ...handlers: Array<FetchHandler>) {
         switch (method) {
             case 'GET':
                 this.get(url, ...handlers)
@@ -187,34 +172,34 @@ export class IssacRouter {
 
     //匹配各模块执行
     //TODO 应该采用效率更高的匹配模式???
-    public async match({ request }: IssacWrapRequest, responser: IssacResponse) {
+    public async match(ctx: FetchContext) {
         //等待中间件执行完毕
-        await this.middlewareMgr.do(request, responser)
+        await this.middlewareMgr.do(ctx.wrapRequest.request, ctx.response)
         //匹配
-        switch (request.method) {
+        switch (ctx.wrapRequest.request.method) {
             case 'GET':
-                this.getModule.match(request, responser)
+                this.getModule.match(ctx)
                 break
             case 'POST':
-                this.postModule.match(request, responser)
+                this.postModule.match(ctx)
                 break
             case 'PUT':
-                this.putModule.match(request, responser)
+                this.putModule.match(ctx)
                 break
             case 'DELETE':
-                this.deleteModule.match(request, responser)
+                this.deleteModule.match(ctx)
                 break
             case 'CONNECT':
-                this.connectModule.match(request, responser)
+                this.connectModule.match(ctx)
                 break
             case 'OPTIONS':
-                this.optionsModule.match(request, responser)
+                this.optionsModule.match(ctx)
                 break
             case 'TRACE':
-                this.traceModule.match(request, responser)
+                this.traceModule.match(ctx)
                 break
             case 'PATCH':
-                this.patchModule.match(request, responser)
+                this.patchModule.match(ctx)
                 break
             default:
                 break

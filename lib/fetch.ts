@@ -4,12 +4,33 @@ import { IssacResponse } from './response'
 import { IssacRouter } from './router'
 import { IssacRequest, IssacWrapRequest } from './wrap-request'
 
-type BunFetchHandler = (req: Request, server: Server) => Response | Promise<Response>
 export type WsUpgradeScheduler =
     | ((request: IssacRequest, server: Server) => Response | void | boolean)
     | undefined
-export type FetchHandler = (req: IssacRequest, res: IssacResponse) => void
-export type HttpMethod = 'GET' | 'POST' | 'DELETE' | 'PUT'
+
+export type BunFetchHandler = (req: Request, server: Server) => Response | Promise<Response>
+export type FetchHandlerReturn =
+    | Bun.BodyInit
+    | void
+    | Object
+    | Promise<void>
+    | Promise<Bun.BodyInit>
+    | Promise<Object>
+export type FetchHandler = (req: IssacRequest, res: IssacResponse) => FetchHandlerReturn
+export type HttpMethod =
+    | 'GET'
+    | 'HEAD'
+    | 'POST'
+    | 'PUT'
+    | 'DELETE'
+    | 'CONNECT'
+    | 'OPTIONS'
+    | 'TRACE'
+    | 'PATCH'
+export type FetchContext = {
+    response: IssacResponse
+    wrapRequest: IssacWrapRequest
+}
 
 /**
  * A core request processor that captures requests and processes them
@@ -33,9 +54,15 @@ export class Fetcher {
 
     public handler(): BunFetchHandler {
         return async (request, server) => {
+            //wrap ctx
             const response = new IssacResponse()
             const wrapRequest = new IssacWrapRequest(request)
+            const context: FetchContext = {
+                response,
+                wrapRequest
+            }
 
+            //upgrade ws
             if (this.upgradeWs) {
                 const result = this.upgradeWs(wrapRequest.request, server)
                 if (result instanceof Response) {
@@ -49,7 +76,7 @@ export class Fetcher {
             }
 
             try {
-                await this.router.match(wrapRequest, response)
+                await this.router.match(context)
             } catch (error) {
                 IssacEventer.emit(IssacEventer.eventSymbol.error, error)
             }

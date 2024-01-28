@@ -1,5 +1,4 @@
 import { Issac, IssacRouter } from '../lib'
-import { match, pathToRegexp } from 'path-to-regexp'
 
 const app = new Issac({
     ws: {
@@ -9,9 +8,7 @@ const app = new Issac({
     }
 })
 
-app.get('/sss', async (req, res) => {
-    res.status(200).text('good!')
-})
+app.get('/sss', () => 'Hello!')
 
 app.ws({
     open(ws) {

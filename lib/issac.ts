@@ -1,5 +1,5 @@
 import { Server, WebSocketHandler } from 'bun'
-import { FetchHandler, Fetcher, WsUpgradeScheduler } from './fetch'
+import { FetchHandler, FetchHandlerReturn, Fetcher, HttpMethod, WsUpgradeScheduler } from './fetch'
 import { IssacRouterConfig, IssacRouter, defaultIssacRouterConfig } from './router'
 import { IssacMiddleware } from './middleware'
 import { IssacMiddlewareHandler } from './middleware/mgr'
@@ -52,53 +52,45 @@ export class Issac {
      * Register the route processing function of the get method
      * @public
      */
-    public get(url: string, ...handlers: Array<FetchHandler>) {
+    public get(url: string, ...handlers: FetchHandler[]) {
         this.fetcher.router.get(url, ...handlers)
+        return this
     }
 
     /**
      * Register the route processing function of the post method
      * @public
      */
-    public post(url: string, ...handlers: Array<FetchHandler>) {
+    public post(url: string, ...handlers: FetchHandler[]) {
         this.fetcher.router.post(url, ...handlers)
+        return this
     }
 
     /**
      * Register the route processing function of the delete method
      * @public
      */
-    public delete(url: string, ...handlers: Array<FetchHandler>) {
+    public delete(url: string, ...handlers: FetchHandler[]) {
         this.fetcher.router.delete(url, ...handlers)
+        return this
     }
 
     /**
      * Register the route processing function of the put method
      * @public
      */
-    public put(url: string, ...handlers: Array<FetchHandler>) {
+    public put(url: string, ...handlers: FetchHandler[]) {
         this.fetcher.router.put(url, ...handlers)
+        return this
     }
 
     /**
      * Register the route processing function of the delete method,used to register some uncommon methods to avoid polluting the method space
      * @public
      */
-    public any(
-        method:
-            | 'GET'
-            | 'HEAD'
-            | 'POST'
-            | 'PUT'
-            | 'DELETE'
-            | 'CONNECT'
-            | 'OPTIONS'
-            | 'TRACE'
-            | 'PATCH',
-        url: string,
-        ...handlers: Array<FetchHandler>
-    ) {
+    public any(method: HttpMethod, url: string, ...handlers: FetchHandler[]) {
         this.fetcher.router.any(method, url, ...handlers)
+        return this
     }
 
     /**
@@ -112,6 +104,7 @@ export class Issac {
                 ...wsHandler
             }
         }
+        return this
     }
 
     /**
@@ -128,6 +121,7 @@ export class Issac {
                 this.fetcher.router.use(new IssacMiddleware(item))
             }
         })
+        return this
     }
 
     /**
