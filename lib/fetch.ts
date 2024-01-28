@@ -33,7 +33,6 @@ export class Fetcher {
 
     public handler(): BunFetchHandler {
         return async (request, server) => {
-            console.log(request)
             const response = new IssacResponse()
             const wrapRequest = new IssacWrapRequest(request)
 

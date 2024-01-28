@@ -1,49 +1,52 @@
 {
-    "name": "issac",
-    "version": "1.0.1",
-    "author": "Lin",
-    "repository": {
-        "type": "git",
-        "url": "https://github.com/Azzellz/Issac"
-    },
-    "main": "lib/index.ts",
-    "module": "lib/index.ts",
-    "devDependencies": {
-        "bun-types": "latest",
-        "vitepress": "^1.0.0-rc.34"
-    },
-    "peerDependencies": {
-        "typescript": "^5.0.0"
-    },
-    "description": "A lightweight web back-end framework based on Bun , using pure ts + Bun Native API to achieve .",
-    "files": [
-        "lib/",
-        "README.md",
-        "README.zh.md",
-        "LICENSE",
-        "bun.lockb"
-    ],
-    "keywords": [
-        "issac",
-        "bun",
-        "javascript",
-        "typescript",
-        "web",
-        "backend",
-        "framework",
-        "http",
-        "rest",
-        "restful",
-        "router",
-        "app",
-        "api"
-    ],
-    "license": "MIT",
-    "scripts": {
-        "docs:dev": "vitepress --host --port 1145 dev docs",
-        "docs:build": "vitepress build docs",
-        "docs:preview": "vitepress preview docs",
-        "build": "bun ./scripts/build.ts"
-    },
-    "type": "module"
+  "name": "issac",
+  "version": "1.0.1",
+  "author": "Lin",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Azzellz/Issac"
+  },
+  "main": "lib/index.ts",
+  "module": "lib/index.ts",
+  "devDependencies": {
+    "bun-types": "latest",
+    "vitepress": "^1.0.0-rc.34"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "description": "A lightweight web back-end framework based on Bun , using pure ts + Bun Native API to achieve .",
+  "files": [
+    "lib/",
+    "README.md",
+    "README.zh.md",
+    "LICENSE",
+    "bun.lockb"
+  ],
+  "keywords": [
+    "issac",
+    "bun",
+    "javascript",
+    "typescript",
+    "web",
+    "backend",
+    "framework",
+    "http",
+    "rest",
+    "restful",
+    "router",
+    "app",
+    "api"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "docs:dev": "vitepress --host --port 1145 dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs",
+    "build": "bun ./scripts/build.ts"
+  },
+  "type": "module",
+  "dependencies": {
+    "path-to-regexp": "^6.2.1"
+  }
 }

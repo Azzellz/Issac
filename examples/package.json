@@ -10,6 +10,7 @@
   "type": "module",
   "dependencies": {
     "elysia": "^0.8.14",
-    "issac": "^1.0.0"
+    "issac": "^1.0.0",
+    "path-to-regexp": "^6.2.1"
   }
 }

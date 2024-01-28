@@ -26,8 +26,12 @@ Currently supports.
 
 # TODO
 
-1. complete basic websocket support (complete)
-2. complete websocket routing support (in progress)
+1. Complete basic websocket support (complete)
+2. Path Parameters and Wildcard Routing (in progress)
+3. Complete websocket routing support (in progress)
+4. Lifecycle support (in progress)
+5. Type Safe (in progress)
+6. Route Cache (in progress)
 
 # Quick Start
 

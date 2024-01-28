@@ -102,7 +102,7 @@ export class IssacResponse {
         try {
             this.setHeaders('Content-Type', 'text/plain;charset=UTF-8')
             init && this.mergeInit(init)
-            this.resolve(new Response(Bun.escapeHTML(content), this.init))
+            this.resolve(new Response(content, this.init))
             this.done = true
         } catch (error: any) {
             this.options?.errorHandler && this.options?.errorHandler(new Error(error))

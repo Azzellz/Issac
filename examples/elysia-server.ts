@@ -5,9 +5,9 @@ new Elysia()
     .get('/:id', (req) => {
         console.log(req.params.id)
     })
-    .get('/:id/n', (req) => {
+    .get('/1', (req) => {
         console.log(req)
-        console.log(req.params.id, 2)
+        console.log(req.params, 2)
     })
     .get('/:id/n', (req) => {
         console.log(req)

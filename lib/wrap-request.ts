@@ -27,7 +27,7 @@ export class IssacWrapRequest {
         this.wrapParams(req)
     }
     private wrapParams(req: IssacRequest) {
-        
+        req.params = {}
     }
     private wrapQuery(req: IssacRequest) {
         req.query = {}
